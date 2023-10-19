@@ -5,7 +5,7 @@ sequenceDiagram
 
     browser->>server: POST https://studies.cs.helsinki.fi/exampleapp/new_note
     activate server
-    server-->>browser: GET https://studies.cs.helsinki.fi/exampleapp/notes
+    server-->>browser: Console output: JSON object parse (100)
     deactivate server
 
     Note right of browser: Browser reloads 
