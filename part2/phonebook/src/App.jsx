@@ -3,7 +3,7 @@ import { useState } from 'react'
 const App = () => {
   const [persons, setPersons] = useState([
     { name: 'Arto Hellas' }
-  ]) 
+  ])    
   const [newName, setNewName] = useState('')
 
   const handleNameChange = (e) => {
@@ -12,11 +12,16 @@ const App = () => {
 
   const addName = (e) => {
     e.preventDefault();
-    const newPersonObject = {
-      name: newName
+    const isDuplicate = persons.find(person => person.name === newName);
+    if (!isDuplicate){
+      const newPersonObject = {
+        name: newName
+      }
+      setPersons(persons.concat(newPersonObject));
+      setNewName('');
     }
-    setPersons(persons.concat(newPersonObject));
-    setNewName('');
+    else
+      alert(`${newName} is already added to phonebook`);
   }
 
   return (
