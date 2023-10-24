@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import personsService from './services/persons';
 import PersonForm from './PersonForm';
 import Filter from './Filter';
 import Persons from './Persons';
@@ -31,21 +32,32 @@ const App = () => {
         number: newNumber,
         id: persons.length + 1
       }
-      setPersons(persons.concat(newPersonObject));
-      setNewName('');
-      setNewNumber('');
+      personsService 
+        .create(newPersonObject)
+        .then(returnedPerson => {      
+          setPersons(persons.concat(returnedPerson));
+          setNewName('');
+          setNewNumber('');
+        })
     }
     else
       alert(`${newName} is already added to phonebook`);
   }
 
+  const deleteName = id => {
+        personsService
+          .remove(id)
+          .then(returnedPerson => 
+            console.log(returnedPerson)
+          );
+  }
+
   useEffect(() => {
-    axios
-      .get('http://localhost:3001/persons')
-      .then(res => {
-        setPersons(res.data);
+    personsService
+      .getAll()
+      .then(initialPersons => {setPersons(initialPersons)
       })
-  }, []);
+    }, []);
 
   return (
     <div>
@@ -65,7 +77,7 @@ const App = () => {
 
       <h2>Numbers</h2>
 
-      <Persons persons={persons} filter={filter}/>
+      <Persons persons={persons} filter={filter} deleteName={deleteName} />
     </div>
   )
 }
