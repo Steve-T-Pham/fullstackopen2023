@@ -29,8 +29,7 @@ const App = () => {
     if (!isDuplicate){
       const newPersonObject = {
         name: newName,
-        number: newNumber,
-        id: persons.length + 1
+        number: newNumber
       }
       personsService 
         .create(newPersonObject)
@@ -40,16 +39,31 @@ const App = () => {
           setNewNumber('');
         })
     }
-    else
-      alert(`${newName} is already added to phonebook`);
+    else{
+      (window.confirm(`${newName} is already added to the phonebook, replace the old number with a new one?`) 
+      ? updateName(persons.find(person => person.name === newName).id) 
+      : null)
+    }
   }
 
   const deleteName = id => {
         personsService
           .remove(id)
-          .then(returnedPerson => 
-            console.log(returnedPerson)
+          .then(() =>
+            setPersons(persons.filter(p => p.id !== id))
           );
+  }
+
+  const updateName = id => {
+    const person = persons.find(p => p.id === id)
+      const changedPerson = {...person, number: newNumber}
+      personsService
+        .update(id, changedPerson)
+        .then(returnedPerson => {
+          setPersons(persons.map(person => person.id !== id ? person : returnedPerson))
+        })
+    setNewName('');
+    setNewNumber('');
   }
 
   useEffect(() => {
