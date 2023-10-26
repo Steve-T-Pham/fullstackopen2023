@@ -4,12 +4,14 @@ import personsService from './services/persons';
 import PersonForm from './PersonForm';
 import Filter from './Filter';
 import Persons from './Persons';
+import Notification from './Notification';
 
 const App = () => {
   const [persons, setPersons] = useState([])    
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('');
   const [filter, setFilter] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
 
   const handleNameChange = (e) => {
     setNewName(e.target.value);
@@ -35,6 +37,10 @@ const App = () => {
         .create(newPersonObject)
         .then(returnedPerson => {      
           setPersons(persons.concat(returnedPerson));
+          setSuccessMessage(`Added ${newName}`);
+          setTimeout(() => {
+            setSuccessMessage(null)
+          }, 5000);
           setNewName('');
           setNewNumber('');
         })
@@ -61,6 +67,10 @@ const App = () => {
         .update(id, changedPerson)
         .then(returnedPerson => {
           setPersons(persons.map(person => person.id !== id ? person : returnedPerson))
+          setSuccessMessage(`Updated ${returnedPerson.name}`);
+          setTimeout(() => {
+            setSuccessMessage(null)
+          }, 5000)
         })
     setNewName('');
     setNewNumber('');
@@ -76,7 +86,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-
+      <Notification message={successMessage} />
       <Filter handleFilterChange={handleFilterChange} filter={filter} />
 
       <h3>add a new</h3>
