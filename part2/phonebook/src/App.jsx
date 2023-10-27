@@ -11,7 +11,8 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('');
   const [filter, setFilter] = useState('');
-  const [successMessage, setSuccessMessage] = useState('');
+  const [successMessage, setSuccessMessage] = useState(null);
+  const [errorMessage, setErrorMessage] = useState(null);
 
   const handleNameChange = (e) => {
     setNewName(e.target.value);
@@ -39,7 +40,7 @@ const App = () => {
           setPersons(persons.concat(returnedPerson));
           setSuccessMessage(`Added ${newName}`);
           setTimeout(() => {
-            setSuccessMessage(null)
+            setSuccessMessage(null);
           }, 5000);
           setNewName('');
           setNewNumber('');
@@ -47,7 +48,7 @@ const App = () => {
     }
     else{
       (window.confirm(`${newName} is already added to the phonebook, replace the old number with a new one?`) 
-      ? updateName(persons.find(person => person.name === newName).id) 
+      ? updateName(persons.find(person => person.name === newName).id)
       : null)
     }
   }
@@ -72,6 +73,12 @@ const App = () => {
             setSuccessMessage(null)
           }, 5000)
         })
+        .catch(err => {
+          setErrorMessage(`Information of ${newName} has already been removed from server`);          
+          setTimeout(() => {
+            setErrorMessage(null);
+          }, 5000);
+        });
     setNewName('');
     setNewNumber('');
   }
@@ -86,7 +93,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <Notification message={successMessage} />
+      <Notification successMessage={successMessage}  errorMessage={errorMessage} />
       <Filter handleFilterChange={handleFilterChange} filter={filter} />
 
       <h3>add a new</h3>
