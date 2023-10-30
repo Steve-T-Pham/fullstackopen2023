@@ -1,15 +1,15 @@
 const Persons = ({ persons, filter, deleteName }) => {
 
     return(
-        <ul>
+        <div>
             {(!filter ? 
-                persons.map(person => <li key={person.id}>{person.name} {person.number} <button onClick={() => deleteName(person.id)}>delete</button></li>) : 
+                persons.map(person => <div key={person.id}>{person.name} {person.number} <button onClick={() => deleteName(person.id)}>delete</button></div>) : 
                 persons.filter(person => 
                     person.name.toLowerCase().includes(filter.toLowerCase()))
                     .map(person => 
-                    <li key={person.id}>{person.name} {person.number} <button onClick={() => deleteName(person.id)}>delete</button></li>)
+                    <div key={person.id}>{person.name} {person.number} <button onClick={() => deleteName(person.id)}>delete</button></div>)
             )}
-        </ul>
+        </div>
     );
 
 }

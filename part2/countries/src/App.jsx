@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import Countries from './Countries';
 import Search from './Search';
+const api_key = import.meta.env.VITE_SOME_KEY;
 
 function App() {
   const [countries, setCountries] = useState([]);
@@ -32,7 +33,7 @@ function App() {
     <div>
       find countries <Search handleChange={handleChange} search={search} />
       
-      <Countries countries={countries} search={search} filteredSearch={filteredSearch} showCountry={showCountry}/>
+      <Countries countries={countries} search={search} filteredSearch={filteredSearch} showCountry={showCountry} api={api_key} />
    </div>
   )
 }

@@ -6,9 +6,7 @@ const Content = ({ parts }) => {
 
     return(
         <div>
-            <ul>
                 {parts.map(part => <Part part={part} key={part.id} />)}
-            </ul>
             <p><strong>total of {total} exercises</strong></p>
         </div>
         );
