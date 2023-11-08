@@ -8,7 +8,7 @@ const mongoose = require('mongoose')
 
 mongoose.set('strictQuery', false)
 
-mongoose.connect(config.mongoUrl)
+mongoose.connect(config.MONGODB_URL)
     .then(() => {
         logger.info('connected to MongoDB')
     })
