@@ -9,13 +9,13 @@ const initialBlogs = [
     {
         "title": "Blog 1",
         "author": "Steve Pham",
-        "url": "localhost:3003/api/blogs/1",
+        "url": "test1",
         "likes": 0
     },
     {
         "title": "Blog 2",
         "author": "Steve Pham",
-        "url": "localhost:3003/api/blogs/2",
+        "url": "test2",
         "likes": 0
     },
 ]
@@ -33,22 +33,60 @@ test('blogs are returned as json', async () => {
         .get('/api/blogs')
         .expect(200)
         .expect('Content-Type', /application\/json/)
-}, 100000)
+}, 10000)
 
 test('all notes are returned', async () => {
     const response = await api.get('/api/blogs')
 
     expect(response.body).toHaveLength(initialBlogs.length)
-})
+}, 10000)
 
 test('blog has unique id', async () => {
-    const res = await api.get('/api/blogs')
+    const response = await api.get('/api/blogs')
 
-    res.body.forEach(blog => {
+    response.body.forEach(blog => {
         expect(blog.id).toBeDefined()
         expect(blog._id).toBeUndefined()
     })
 })
+
+test('blog successfully posts', async () => {
+    const newBlog = {
+        "title": "Blog 3",
+        "author": "Steve Pham",
+        "url": "test3",
+        "likes": 0
+    }
+
+    let blogObject = new Blog(newBlog)
+    await blogObject.save()
+    const response = await api.get('/api/blogs')
+    expect(response.body).toHaveLength(initialBlogs.length + 1)
+    expect(response.body.find(blog => 
+        blog.title === newBlog.title && 
+        blog.author === newBlog.author && 
+        blog.url === newBlog.url && 
+        blog.likes === newBlog.likes)).toBeDefined()
+})
+
+test('likes is initialized to 0', async () => {
+    const newBlog = {
+        "title": "Blog 4",
+        "author": "Steve Pham",
+        "url": "test4"
+    }
+
+    let blogObject = new Blog(newBlog)
+    await blogObject.save()
+    const response = await api.get('/api/blogs')
+    expect(response.body.find(blog => blog.title === newBlog.title).likes).toEqual(0)
+})
+
+
+test('return status 400 if title/url are missing', async () => {
+    
+})
+
 
 afterAll(async () =>
     await mongoose.connection.close()
