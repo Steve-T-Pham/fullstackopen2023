@@ -28,6 +28,25 @@ beforeEach(async () => {
     await blogObject.save()
  })
 
+test('successfully delete blog post', async () => {
+    const blogsAtStart = await (await Blog.find({})).map(blog => blog.toJSON())
+    const blogToDelete = blogsAtStart[0]
+
+    await api
+    .delete(`/api/blogs/${blogToDelete.id}`)
+    .expect(204)
+
+    const blogsAtEnd = await (await Blog.find({})).map(blog => blog.toJSON())
+    
+    expect(blogsAtEnd).toHaveLength(
+        initialBlogs.length - 1
+    )
+
+    const titles = blogsAtEnd.map(r => r.title)
+
+    expect(titles).not.toContain(blogToDelete.title)
+})
+
 test('blogs are returned as json', async () => {
     await api
         .get('/api/blogs')
@@ -82,10 +101,18 @@ test('likes is initialized to 0', async () => {
     expect(response.body.find(blog => blog.title === newBlog.title).likes).toEqual(0)
 })
 
-
 test('return status 400 if title/url are missing', async () => {
-    
+    const newBlog = {
+        "url": "test4",
+        "likes": 0
+    }
+
+    await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(400)
 })
+
 
 
 afterAll(async () =>
