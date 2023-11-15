@@ -113,7 +113,22 @@ test('return status 400 if title/url are missing', async () => {
     .expect(400)
 })
 
+test('update a note already in database', async () => {
+    const blogsAtStart = await (await Blog.find({})).map(blog => blog.toJSON())
+    const blogToUpdate = blogsAtStart[0]
 
+    const updatedBlog = {
+        likes: blogToUpdate.likes + 1
+    }
+
+    const res = await api
+    .put(`/api/blogs/${blogToUpdate.id}`)
+    .send(updatedBlog)
+    .expect(200)
+    .expect('Content-Type', /application\/json/)
+
+    expect(res.body.likes).toBe(blogToUpdate.likes + 1)
+})
 
 afterAll(async () =>
     await mongoose.connection.close()
